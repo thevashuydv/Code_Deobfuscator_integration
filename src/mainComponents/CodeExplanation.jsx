@@ -14,43 +14,28 @@ function CodeExplanation() {
   const handleAnalyze = async () => {
     setIsAnalyzing(true);
     try {
-      const ast = parseFunction(code);
-      const analysis = analyzeAST(ast);
+      const parseResult = parseFunction(code);
+      const analysis = analyzeAST(parseResult);
+      
+      if (analysis.error) {
+        setExplanation({ error: analysis.error });
+        return;
+      }
+      
       if (activeTab === 'structure') {
-        const exp = await generateExplanation(analysis);
+        const exp = generateExplanation(analysis, code);
         setExplanation(exp);
       } else {
-        const exp = await generateObfuscationExplanation(analysis);
+        const exp = generateObfuscationExplanation(code);
         setExplanation(exp);
       }
     } catch (error) {
       console.error('Analysis failed:', error);
-      setExplanation({ title: 'Error', content: 'Failed to analyze the code. Please check the syntax.' });
+      setExplanation({ error: 'Failed to analyze the code. Please check the syntax.' });
     } finally {
       setIsAnalyzing(false);
     }
   };
-
-  // Helper function to format content sections
-  const formatContent = (content) => {
-    if (typeof content === 'string') return content;
-    if (Array.isArray(content)) {
-      return content.map(item => `• ${item}`).join('\n');
-    }
-    if (typeof content === 'object') {
-      return Object.entries(content)
-        .filter(([key]) => key !== 'title' && key !== 'content') // Exclude title and content keys
-        .map(([, value]) => { // Only use the value, ignore the key
-          if (Array.isArray(value)) {
-            return value.map(item => `• ${item}`).join('\n');
-          }
-          return value;
-        }).join('\n\n');
-    }
-    return String(content);
-  };
-
-  // Helper function to render explanation content
 
   const renderExplanation = (exp) => {
     if (!exp) return null;
@@ -67,18 +52,14 @@ function CodeExplanation() {
       );
     }
 
-    const steps = activeTab === 'structure' 
-      ? generateExplanation(exp, code)
-      : generateObfuscationExplanation(code);
-
     return (
       <div className="mt-8 space-y-6">
-        {steps.map((step, index) => (
+        {Array.isArray(exp) ? exp.map((step, index) => (
           <div key={index} className="p-8 bg-[#0f1729] rounded-lg border border-gray-800">
             <h3 className="text-xl font-semibold text-[#4fffb0]">{step.title}</h3>
             <p className="text-gray-300">{step.content}</p>
           </div>
-        ))}
+        )) : <p>No analysis available</p>}
       </div>
     );
   };
