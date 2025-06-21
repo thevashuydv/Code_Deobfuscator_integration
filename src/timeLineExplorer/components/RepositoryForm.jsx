@@ -1,15 +1,28 @@
-import { useState } from 'react';
+//This React component is a form called RepositoryForm. It allows a user to:
+//Enter a GitHub repository URL
+//Enter the path to a JavaScript file inside that repo
+//Submit this data to analyze the obfuscation timeline 
+
+import { useState } from 'react'; //managing state
 import { Button } from '../../components/ui/button';
 import React from 'react';
 import { Input } from '../../components/ui/input';
 import { Label } from '../../components/ui/label';
 import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from '../../components/ui/card';
-import RepoSuggestions from './RepoSuggestions';
+import RepoSuggestions from './RepoSuggestions'; //helper component that gives suggested repo URLs and file paths
 
 const RepositoryForm = ({ onSubmit, isLoading }) => {
-  const [repoUrl, setRepoUrl] = useState('');
-  const [filePath, setFilePath] = useState('');
-  const [error, setError] = useState('');
+  const [repoUrl, setRepoUrl] = useState(''); //stores the github url entered by user - repoUrl
+  const [filePath, setFilePath] = useState(''); //Stores the path of the JS file inside the repo - filePath
+  const [error, setError] = useState(''); //Stores any validation error messages to display - error
+
+/* Now, writing a function When the user submits:
+  Prevents page reload with e.preventDefault().
+  Validates inputs:
+    Checks if repo URL and file path are not empty.
+    Makes sure the repo URL includes "github.com".
+    If all good, clears error and sends the input to onSubmit function (which is passed from the parent component)*/
+
 
   const handleSubmit = (e) => {
     e.preventDefault();

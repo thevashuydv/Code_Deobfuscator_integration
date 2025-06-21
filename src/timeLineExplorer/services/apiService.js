@@ -1,3 +1,9 @@
+/* Handles API requests related to timeline analysis.
+Fetches commit history, 
+retrieves file contents at each commit, 
+and sends data to the backend for obfuscation metric calculation.
+*/
+
 import axios from 'axios';
 
 // Backend API URL

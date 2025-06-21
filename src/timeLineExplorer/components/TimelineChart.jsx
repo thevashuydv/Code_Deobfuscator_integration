@@ -1,8 +1,15 @@
+/*TimelineChart takes in an array of commit data (timelineData) and visually shows the progression of obfuscation in JavaScript code over time.
+  Each commit is displayed like a "step" in a timeline — click any step to see detailed metrics like:
+    Number of evals
+    Count of short variable names
+    Whether the file is minified */
+
 import React from 'react';
 import { useState, useEffect } from 'react';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '../../components/ui/card';
 
 // Color coding for scores
+// A helper function that decides the color of a score badge
 const getScoreColor = (score) => {
   if (score >= 80) return 'bg-red-500 text-white';
   if (score >= 50) return 'bg-yellow-400 text-black';
@@ -11,10 +18,12 @@ const getScoreColor = (score) => {
 };
 
 const TimelineChart = ({ timelineData }) => {
-  const [selected, setSelected] = useState(null);
-  const [isDarkMode, setIsDarkMode] = useState(false);
+  const [selected, setSelected] = useState(null); // Stores which commit step is currently clicked to show extra info - selected
+  const [isDarkMode, setIsDarkMode] = useState(false); // Tracks if the site is in dark mode for theme responsiveness - isDarkMode
 
   // Check for dark mode and update when it changes
+  // Uses a MutationObserver to watch for changes in theme (light/dark).
+  // it isn't directly used in rendering right now — possibly future use.
   useEffect(() => {
     const checkDarkMode = () => {
       const isDark = document.documentElement.classList.contains('dark');
@@ -35,6 +44,7 @@ const TimelineChart = ({ timelineData }) => {
   }, []);
 
   // Sort by date ascending
+  // Sorts the timeline data from oldest to newest using the commit timestamp.
   const sorted = [...timelineData].sort((a, b) => a.timestamp - b.timestamp);
 
   return (

@@ -1,3 +1,9 @@
+/* shows a fancy animated line chart of obfuscation scores over time (based on Git commits)
+See dots (points) representing each commit’s score
+Click on a point to view commit details
+See lines animated between points to show score progression
+ */
+
 import { useState, useRef } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import React from 'react';
@@ -5,6 +11,7 @@ import { useSpring, animated } from 'react-spring';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 
 // Tech-themed colors for the chart
+// A set of theme colors used in the chart for points, lines, glow, etc.
 const CHART_COLORS = {
   primary: '#8b5cf6', // Purple
   secondary: '#3b82f6', // Blue
@@ -15,7 +22,8 @@ const CHART_COLORS = {
 };
 
 const AnimatedTimelineChart = ({ timelineData }) => {
-  const [selectedPoint, setSelectedPoint] = useState(null);
+  const [selectedPoint, setSelectedPoint] = useState(null); 
+  //Keeps track of the currently clicked point, so its detail popup can be shown - selectedPoint+setSelectedPoint
   const containerRef = useRef(null);
 
   // Format dates for display
